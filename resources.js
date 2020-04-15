@@ -3,22 +3,29 @@ var data = [{"resourceId":"402d680e-d652-41d0-afd2-85fa1e61536a","resourceLangua
 var data = JSON.parse(document.body.textContent);
 var baddata = [];
 var gooddata = [];
-var checkdata = [];
+var alldata = new Map();
 data.forEach((resource) => {
   resource.resourceLanguages.forEach((resourceLanguage) => {
-    id = resourceLanguage.resourceId;
-    link = resourceLanguage.resourceLink;
-    name = resourceLanguage.resourceName;
-    language = resourceLanguage.language;
-    checkdata.push({'id': id, 'link': link, 'name': name, 'language': language});
+    alldata.set(
+      resourceLanguage.resourceId,
+      {
+        'id': resourceLanguage.resourceId,
+        'link': resourceLanguage.resourceLink,
+        'name': resourceLanguage.resourceName,
+        'language': resourceLanguage.language,
+        'owner': resourceLanguage.resourceContactEmail,
+        'created': resourceLanguage.createdAt,
+        'updated': resourceLanguage.updatedAt
+      }
+    );
   });
 });
 let requests = [];
-checkdata.forEach((resource) => {
+alldata.forEach(function(resource, resourceId) {
   if(resource.link != '') {
     requests.push(checklink(resource));
   } else {
-    baddata.push({'id': resource.id, 'link': resource.link, 'name': resource.name, 'language': resource.language, 'msg': 'empty link'});
+    baddata.push({'id': resourceId, 'msg': 'empty link'});
   }
 });
 
@@ -26,7 +33,7 @@ Promise.all(requests).then(allfinished);
 
 function allfinished() {
   let csvContent = "data:text/csv;charset=utf-8,";
-  csvContent += '"Resource Name","Resource Link","Link","Status message"' + '\\u000A';
+  csvContent += '"Status Message","Resource Name","Owner","Created At","Last Modified","Resource Link","Link"' + '\\u000A';
   gooddata.forEach(function(record) {
     csvContent += makecsv(record, 'GOOD');
   });
@@ -39,10 +46,15 @@ function allfinished() {
 }
 
 function makecsv(record, msgprefix) {
-  line = '"' + record.name.replace(/"/g, '""') + '",';
-  line += '"' + record.link.replace(/"/g, '""').replace(/#/g, '%23') + '",';
-  line += '"' + window.location.origin + '/' + record.language + '/resources?resourceId=' + record.id.replace(/"/g, '""') + '",';
-  line += '"' + msgprefix + ': ' + record.msg.toString().replace(/"/g, '""') + '"' + '\\u000A';
+  id = record.id;
+  resource = alldata.get(id);
+  line = '"' + msgprefix + ': ' + record.msg.toString().replace(/"/g, '""') + '",';
+  line += '"' + resource.name.replace(/"/g, '""') + '",';
+  line += '"' + resource.owner.replace(/"/g, '""') + '",';
+  line += '"' + resource.created.replace(/"/g, '""') + '",';
+  line += '"' + resource.updated.replace(/"/g, '""') + '",';
+  line += '"' + resource.link.replace(/"/g, '""').replace(/#/g, '%23') + '",';
+  line += '"' + window.location.origin + '/' + resource.language + '/resources?resourceId=' + resource.id.replace(/"/g, '""') + '"' + '\\u000A';
   return line;
 }
 
@@ -50,13 +62,13 @@ function checklink(resource) {
   return fetch(resource.link).then(
     function(response) {
       if(response.status >= 200 && response.status <= 299) {
-        gooddata.push({'id': resource.id, 'link': resource.link, 'name': resource.name, 'language': resource.language, 'msg': response.status});
+        gooddata.push({'id': resource.id, 'msg': response.status});
       } else {
-        baddata.push({'id': resource.id, 'link': resource.link, 'name': resource.name, 'language': resource.language, 'msg': response.status});
+        baddata.push({'id': resource.id, 'msg': response.status});
       }
     }
   ).catch(function(err) {
-    baddata.push({'id': resource.id, 'link': resource.link, 'name': resource.name, 'language': resource.language, 'msg': err});
+    baddata.push({'id': resource.id, 'msg': err});
   });
 }
 

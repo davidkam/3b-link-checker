@@ -14,7 +14,7 @@ This has only been tested and confirmed working for Chrome
  3. Open Selenium IDE
  4. In the pop up window that should appear, select the option for `Open an existing project`
  5. In the open file dialog box, find the `cargill-ims-link-checker.side` file that you downloaded in step 1
- 6. ![Selenium IDE should now look something like this:](images/selenium.png)
+ 6. Selenium IDE should now look something like this: ![Selenium IDE should now look something like this:](images/selenium.png)
  7. Change the base URL if necessary (circled in yellow)
  8. Change the Area ID if necessary (circled in blue - See **Debug** section for more information)
  9. Click on the Run button (circled in green) to run the link checker

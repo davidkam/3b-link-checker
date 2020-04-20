@@ -42,9 +42,11 @@ The most common cause for this is that DNS can not be resolved.  This can happen
 Also, there are false positives here as well.  For some reason sites like google.com show up with this error.
 
 ## Debug
-If for whatever reason you get an error with running the link checker, the best way to debug is to open the web developer tools in the window that Selenium IDE opens ([https://developers.google.com/web/tools/chrome-devtools/open](https://developers.google.com/web/tools/chrome-devtools/open)). Use the `console` to see if there are any javascript errors. 
+If for whatever reason you get an error with running the link checker, the best way to debug is to open the web developer tools([https://developers.google.com/web/tools/chrome-devtools/open](https://developers.google.com/web/tools/chrome-devtools/open)). 
 
-Use the `network` tab to double check the Area ID.  With the network tab open, go to the IMS app and click on the Resources link to load all the resources.  In the `network` tab, you should see a line that that starts with:
+If there are issues with the link checker, open up developer tools in the window that Selenium IDE opened (it has a bunch of text on it as it is the json data of all the resources).  Use the `console` tab of the developer tools to see if there are any javascript errors. 
+
+To get the correct Area ID (step 8 of the Usage section), open up developer tools in the main IMS window and use the `network` tab.  With the network tab open, navigate to the IMS app and click on the Resources link to load all the resources.  In the `network` area of the developer tools, look for a line that starts with:
 `resources?viewContext=RESOURCES&areaGuid=...`
 
 The Area ID is the value after the `areaGuid=`.  Edit this value in the Selenium IDE project if necessary.

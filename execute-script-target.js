@@ -31,7 +31,7 @@ Promise.all(requests).then(allfinished);
 
 function allfinished() {
     let csvContent = "data:text/csv;charset=utf-8,";
-    csvContent += '"Status Message","Resource Name","Resource Type","Owner","Created At","Last Modified","Resource Link","Link"' + '\\\\u000A';
+    csvContent += '"Status Message","Resource Name","Resource Type","Owner","Created At","Last Modified","Resource Link","Link"' + '\\u000A';
     gooddata.forEach(function(record) {
         csvContent += makecsv(record, 'GOOD');
     });
@@ -53,7 +53,7 @@ function makecsv(record, msgprefix) {
     line += '"' + resource.created.replace(/"/g, '""') + '",';
     line += '"' + resource.updated.replace(/"/g, '""') + '",';
     line += '"' + resource.link.replace(/"/g, '""').replace(/#/g, '%23') + '",';
-    line += '"' + window.location.origin + '/' + resource.language + '/resources?resourceId=' + resource.id.replace(/"/g, '""') + '"' + '\\\\u000A';
+    line += '"' + window.location.origin + '/' + resource.language + '/resources?resourceId=' + resource.id.replace(/"/g, '""') + '"' + '\\u000A';
     return line;
 }
 

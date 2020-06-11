@@ -2,19 +2,22 @@ var data = JSON.parse(document.body.textContent);
 var alldata = new Map();
 data.forEach((task_template) => {
     task_template.taskTemplates.forEach((task) => {
+        deleted = (typeof task.deleted === 'undefined')?false:task.deleted;
+        active = (typeof task.active === 'undefined')?false:task.active;
+        duration = (typeof task.expectedTaskDuration === 'undefined')?0:task.expectedTaskDuration;
         alldata.set(task.id, {
             'id': task.id,
             'owner': task_template.taskOwnerContact,
             'email': task_template.taskOwnerContactEmail,
-            'deleted': task.deleted.toString(),
-            'active': task.active.toString(),
+            'deleted': deleted.toString(),
+            'active': active.toString(),
             'name': task.taskName,
             'description': task.taskDescription,
             'function': task.taskFunction,
             'role': task.taskJobRole,
             'process': task.taskProcess,
             'language': task.language,
-            'expected_duration': task.expectedTaskDuration.toString(),
+            'expected_duration': duration.toString(),
             'recurrence': task.taskRecurrence,
             'start_time': task.taskStartTime,
             'criticality': task.taskCriticality,
